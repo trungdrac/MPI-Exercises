@@ -2,6 +2,10 @@
 # Created by https://www.gitignore.io/api/c,c++,codeblocks,visualstudiocode
 # Edit at https://www.gitignore.io/?templates=c,c++,codeblocks,visualstudiocode
 
+### User define ###
+bcast
+*.out
+
 ### C ###
 # Prerequisites
 *.d
