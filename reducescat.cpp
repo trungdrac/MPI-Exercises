@@ -26,20 +26,17 @@ int main(int argc, char** argv){
   } else {
 
   }
-  
-  for (int i=0; i<size; i++)
-        sendbuf[i] = rank + i;
-  recvcounts = (int *)malloc( size * sizeof(int) );
-  for (int i=0; i<size; i++)
+
+  sendbuf = (int *) malloc( size * sizeof(int) );
+    for (int i=0; i<size; i++)
+        sendbuf[i] = size + 1;
+    recvcounts = (int *)malloc( size * sizeof(int) );
+    for (int i=0; i<size; i++)
         recvcounts[i] = 1;
-  MPI_Reduce_scatter(sendbuf, &recvbuf, recvcounts, MPI_INT, MPI_SUM, comm);
  
-   sumval = size * rank + ((size - 1) * size)/2;
-    /* recvbuf should be size * (rank + i) */
-    if (recvbuf != sumval) {
-        err++;
-        fprintf( stdout, "Did not get expected value for reduce scatter\n" );
-        fprintf( stdout, "[%d] Got %d expected %d\n", rank, recvbuf, sumval );fflush(stdout);
-    }
+    MPI_Reduce_scatter( sendbuf, &recvbuf, recvcounts, MPI_INT, MPI_SUM, comm );
+    printf("%d %d\n",rank, recvbuf);
+
   MPI_Finalize();
 }
+
