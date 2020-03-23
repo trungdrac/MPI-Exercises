@@ -4,6 +4,14 @@
 
 ### User define ###
 bcast
+reduce
+reducestat
+allreduce
+alltoall
+allgather
+scan
+sg
+
 *.out
 
 ### C ###
