@@ -80,7 +80,7 @@ int main(int argc, char** argv)
       {
         x = x_min + j*(x_max - x_min) / N;
 
-        count[i][j] = 0;
+        count[i][j] = INT_MAX; // 0
 
         x1 = x;
         y1 = y;
@@ -99,19 +99,30 @@ int main(int argc, char** argv)
           y1 = y2;
         }
 
-        if ((count[i][j] % 2) == 1)
-        {
+        if (count[i][j] < COUNT_MAX) {
           r[i][j] = 255;
           g[i][j] = 255;
           b[i][j] = 255;
+        } else {
+          r[i][j] = 0;
+          g[i][j] = 0;
+          b[i][j] = 0;
         }
-        else
-        {
-          c = (int)(255.0 * sqrt(sqrt(sqrt(((double)(count[i][j]) / (double)(COUNT_MAX))))));
-          r[i][j] = 3 * c / 5;
-          g[i][j] = 3 * c / 5;
-          b[i][j] = c;
-        }
+        #pragma region nearby point
+        // if ((count[i][j] % 2) == 1)
+        // {
+        //   r[i][j] = 255;
+        //   g[i][j] = 255;
+        //   b[i][j] = 255;
+        // }
+        // else
+        // {
+        //   c = (int)(255.0 * sqrt(sqrt(sqrt(((double)(count[i][j]) / (double)(COUNT_MAX))))));
+        //   r[i][j] = 3 * c / 5;
+        //   g[i][j] = 3 * c / 5;
+        //   b[i][j] = c;
+        // }
+        #pragma endregion
       }
     }
   }
