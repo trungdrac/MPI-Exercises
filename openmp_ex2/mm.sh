@@ -1,0 +1,1 @@
+gcc -o mm -fopenmp ./mm.c && ./mm

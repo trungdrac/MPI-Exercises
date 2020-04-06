@@ -29,5 +29,5 @@ int main (int argc, const char *argv[]) {
     }
     
     delta = omp_get_wtime() - start;
-    printf("PI = %.16g computed in %.6f seconds\n", sum, delta);
+    printf("PI = %.10g computed in %.6f seconds\n", sum, delta);
 }

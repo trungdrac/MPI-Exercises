@@ -14,6 +14,10 @@ sg
 
 *.out
 
+openmp_ex2/mm
+openmp_ex2/mm_compare
+openmp_ex2/pi
+openmp_ex2/pi_compare
 ### C ###
 # Prerequisites
 *.d

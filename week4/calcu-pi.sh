@@ -1,0 +1,1 @@
+gcc -o a.out calcu-pi.c -lgomp && ./a.out
