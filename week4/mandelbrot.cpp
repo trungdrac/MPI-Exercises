@@ -1,37 +1,68 @@
-#include <stdlib.h>
-#include <stdio.h>
+#include <bits/stdc++.h>
 #include <math.h>
 #include <omp.h>
+#include "../libs/simple_svg_1.0.0.hpp"
 
-int main();
+int M = 500, N = 500;
+
+int main(int argc, char** argv);
 int i4_min(int i1, int i2); //tra ve so nho hon trong i1, i2
+void draw(int** r, int** g, int** b, bool drawNearby);
 
-int main()
+
+int main(int argc, char** argv)
 {
-  int M = 500, N = 500; //so pixel tren truc x va truc y
-  int b[M][N];
+  #pragma region read commandline parameters
+  bool drawNearby = false;
+  if (argc == 2) {
+    int p = atoi(argv[1]);
+    drawNearby = (p != 0);
+  } else if (argc == 4) {
+    M = atoi(argv[1]);
+    N = atoi(argv[2]);
+    int p = atoi(argv[3]);
+    drawNearby = (p != 0);
+  }
+  #pragma endregion
+  
+  #pragma region declare variables
+  int **r, **g, **b, **count;
   int c; //  c = X + i*Y, Z(n+1) = Z(n)^2 + c
-  int count[M][N];
+  
   int COUNT_MAX = 2000; //so lan lap toi da cho 1 pixel
-  int g[M][N];
   int i, j , jhi, jlo, k;
 
   char *output_filename = "mandelbrot_openmp.ppm";
   FILE *output_unit;
-  int r[M][N];
   double wtime;
   double x_max = 1.25, x_min = -2.25; //khoang cua x
   double y_max = 1.75, y_min = -1.75; //khoang cua y
   double x, x1, x2, y, y1, y2;
+  #pragma endregion 
+
+  #pragma region allocate memory
+  r = new int*[M];
+  g = new int*[M];
+  b = new int*[M];
+  count = new int*[M];
+  for (int i = 0; i < M; i++) {
+    r[i] = new int[N];
+    g[i] = new int[N];
+    b[i] = new int[N];
+    count[i] = new int[N];
+  }
+  #pragma endregion
+
+  
 
   printf("c = x + i*y\n");
   printf("voi x trong khoang [%g,%g]\n", x_min, x_max);
   printf("va y trong khoang [%g,%g]\n", y_min, y_max);
   printf("lap %d lan moi pixel\n", COUNT_MAX);
-  printf ("\n");
-  printf("Z(n+1) = Z(n)^2 + C.\n");
-  printf("Neu cac vong lap gioi han va Z(n) bi chan (cu the Z(n)<2)\n");
-  printf("thi c thuoc tap Mandelbrot.\n");
+  
+  // Z_(n+1) = Z_n ^ 2 + c
+  // Neu Z_n hoi tu khi n tien den vo cuc thi c thuoc hinh Mandelbrot
+
   printf ("\n");
   printf ("Da tao file ket qua %dx%d pixels\n", M, N );
 
@@ -43,11 +74,11 @@ int main()
   #pragma omp for
     for (i = 0; i < M; i++)
     {
-      y = ((double)(i - 1) * y_max + (double)(M - i) * y_min) / (double)(M - 1);
+      y = y_min + i*(y_max - y_min)/M;
 
       for (j = 0; j < N; j++)
       {
-        x = ((double)(j - 1) * x_max + (double)(N - j) * x_min) / (double)(N - 1);
+        x = x_min + j*(x_max - x_min) / N;
 
         count[i][j] = 0;
 
@@ -89,7 +120,7 @@ int main()
   printf("\n");
   printf("Time = %g seconds.\n", wtime);
 
-  //tao file ket qua
+  #pragma region write out results
   output_unit = fopen(output_filename, "wt");
 
   fprintf(output_unit, "P3\n");
@@ -110,6 +141,16 @@ int main()
   }
 
   fclose(output_unit);
+  draw(r, g, b, drawNearby);
+  #pragma endregion
+
+  #pragma region cleanup
+  for (int i = 0; i < M; i++) {
+    delete[] r[i], g[i], b[i], count[i];
+  }
+  delete[] r, g, b, count;
+  #pragma endregion
+
   return 0;
 }
 
@@ -126,4 +167,28 @@ int i4_min(int i1, int i2)
     value = i2;
   }
   return value;
+}
+
+void draw(int** r, int** g, int** b, bool drawNearby = false) {
+  int offsetX = 20, offsetY = 20;
+  svg::Dimensions dimensions(M + 2*offsetX, N + 2*offsetY);
+  svg::Document* doc = new svg::Document("output.svg", svg::Layout(dimensions, svg::Layout::BottomLeft));
+
+  svg::Rectangle background(svg::Point(0, 0), M + 2*offsetX, N + 2*offsetY, svg::Fill(svg::Color::White), svg::Stroke(0, svg::Color::White));
+  *doc << background;
+
+  for (int i = 0; i < M; i++) {
+    for (int j = 0; j < N; j++) {
+      if (r[i][j] == 255 && g[i][j] == 255 && b[i][j] == 255) continue;
+      if (drawNearby || (r[i][j] == 0 && g[i][j] == 0 && b[i][j] == 0)) {
+        svg::Point topLeft(j + offsetX, i + offsetY);
+        svg::Color color(r[i][j], g[i][j], b[i][j]);
+        svg::Rectangle rect(topLeft, 1, 1, svg::Fill(color), svg::Stroke(0, color));
+        *doc << rect;
+      }
+    }
+  }
+
+  doc->save();
+  delete doc;
 }

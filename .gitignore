@@ -18,6 +18,10 @@ openmp_ex2/mm
 openmp_ex2/mm_compare
 openmp_ex2/pi
 openmp_ex2/pi_compare
+
+week4/*.ppm
+week4/*.svg
+
 ### C ###
 # Prerequisites
 *.d

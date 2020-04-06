@@ -1,1 +1,1 @@
-gcc mandelbrot.c -o b.out -lgomp -lm && ./b.out
+g++ mandelbrot.cpp -o b.out -lgomp && ./b.out

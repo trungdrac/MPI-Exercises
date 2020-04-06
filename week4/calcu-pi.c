@@ -1,65 +1,47 @@
-#include <stdio.h>
 #include <omp.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <time.h>
 
-#define MAX_THREADS 4
-
-static long num_steps = 100000000;
+static long steps = 1000000;
 double step;
-int main()
-{
-    int i, j;
-    int my_dyn = 1;
-    double pi, full_sum = 0.0;
-    double start_time, run_time;
-    double sum[MAX_THREADS];
-    int num_processor = omp_get_num_procs();
-    int is_parallel = omp_in_parallel();
-    int maxthreads = omp_get_max_threads();
-    int numthreads;
 
-    step = 1.0 / (double)num_steps;
+int main (int argc, const char *argv[]) {
 
-    // omp_set_dynamic(my_dyn);
+    int i;
+    double x;
+    double sum = 0.0;
+    double start, delta;
 
-    printf("\nnum_processor = %d\n", num_processor);
-    printf("\nmax_threads = %d\n", maxthreads);
-    printf("\nis_parallel: %d\n", is_parallel);
-    printf("\nstart calculate PI\n");
-    
-    omp_set_num_threads(1); // set the number of thread for region parallel
-        
-    full_sum = 0.0;
-    start_time = omp_get_wtime();
-    #pragma omp parallel private(i)
+    // omp_set_num_threads(16);
+    sum = 0.0;
+    start = omp_get_wtime();
+    printf("Before parallel: ");
+    printf("4. If being in parallel region: %d\n", omp_in_parallel());
+    #pragma omp parallel private(x)
     {
-        int id = omp_get_thread_num();
-        numthreads = omp_get_num_threads();
-        int is_dyn = omp_get_dynamic();
-        int is_nested = omp_get_nested();
-        is_parallel = omp_in_parallel();
-        double x;
-
-        double partial_sum = 0;
-
+        omp_set_nested(2);
+        omp_set_dynamic(1);
+        #pragma omp for reduction(+:sum)
+        for (i=0; i < steps; i++) {
+            x = 4.0*pow(-1, i) / (1.0+2*i);
+            sum += x; 
+            // printf("%d: On thread %d, x is: %f\n", i, omp_get_thread_num(), x);
+        }
+        
         #pragma omp single
         {
-            printf("\nnum_threads = %d\n", numthreads);
-            printf("\ndynamic status: %d\n", is_dyn);
-            printf("\nis_parallel = %d\n", is_parallel);
-            printf("\nis_nested: %d\n", is_nested);            
+            printf("1. The number of processors available: %d\n", omp_get_num_procs());
+            printf("2. The number of threads being used: %d\n", omp_get_num_threads());
+            printf("3. The maximum number of threads available: %d\n", omp_get_max_threads());
+            printf("4. If being in parallel region: %d\n", omp_in_parallel());
+            printf("5. If dynamic threads are enabled: %d\n", omp_get_dynamic());
+            printf("6. If nested parallelism is supported: %d\n", omp_get_nested());
         }
-
-        for (i = id; i < num_steps; i += numthreads)
-        {
-            x = (i + 0.5) * step;
-            partial_sum += +4.0 / (1.0 + x * x);
-        }
-        #pragma omp critical
-        full_sum += partial_sum;
     }
-
-    pi = step * full_sum;
-    run_time = omp_get_wtime() - start_time;
-    printf("\n PI is %f in %f seconds %d threads\n", pi, run_time, numthreads);
-    
+    printf("After parallel: ");
+    printf("4. If being in parallel region: %d\n\n", omp_in_parallel());
+    delta = omp_get_wtime() - start;
+    printf("PI = %.10g computed in %.6f seconds\n", sum, delta);
 }
