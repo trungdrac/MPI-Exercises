@@ -24,7 +24,7 @@ void XuatMaTran(int **a, int dong, int cot){
 int main()
 {
     int **axb = NULL, **bxc = NULL;
-    int a=130, b=100, c=90;
+    int a=1300, b=1000, c=900;
     int sum, i, j, k;
     int multiply[a][c];
     int nthreads, tid;
@@ -51,7 +51,7 @@ int main()
     #pragma omp parallel shared(axb, bxc, multiply) private(i, j, k)
     {   omp_set_num_threads(8);
         
-        #pragma omp for schedule(dynamic,1) nowait
+        #pragma omp for schedule(dynamic,1)
         for (i = 0; i < a; i++) {
             for (k = 0; k < c; k++) {
                 for (j = 0; j < b; j++) 

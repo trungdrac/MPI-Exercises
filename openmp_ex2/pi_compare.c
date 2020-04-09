@@ -22,5 +22,5 @@ int main (int argc, const char *argv[]) {
        // printf("%f", x); 
     }
     end = clock();
-    printf("\nPI = %.16g computed in: %.6fs\n", sum, ((double)(end - start))/CLOCKS_PER_SEC);
+    printf("\nPI = %.10g computed in: %.6fs\n", sum, ((double)(end - start))/CLOCKS_PER_SEC);
 }

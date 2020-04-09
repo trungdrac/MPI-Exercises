@@ -1,0 +1,1 @@
+g++ mandelbrot.cpp -o b.out -lgomp && ./b.out

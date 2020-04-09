@@ -1,0 +1,1 @@
+gcc -o pi_compare ./pi_compare.c -lm && ./pi_compare

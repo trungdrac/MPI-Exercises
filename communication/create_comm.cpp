@@ -28,4 +28,5 @@ bool createComm(int world_size, int dimension, MPI_Comm WORLD, MPI_Comm &new_wor
     MPI_Cart_create(MPI_COMM_WORLD, 3, dim, period, true, &new_world);
     return true;
   }
+  return false;
 }
