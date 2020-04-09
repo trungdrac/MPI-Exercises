@@ -1,0 +1,1 @@
+gcc bruteforce.c -lssl -lcrypto -lgomp -o brute && ./brute

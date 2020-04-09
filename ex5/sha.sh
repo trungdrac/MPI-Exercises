@@ -1,0 +1,1 @@
+gcc sha.c -lgomp -lssl -lcrypto -o sha && ./sha
