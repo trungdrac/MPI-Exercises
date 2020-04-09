@@ -82,8 +82,7 @@ int main(int argc, char** argv)
 
         count[i][j] = INT_MAX; // 0
 
-        x1 = x;
-        y1 = y;
+        x1 = x; y1 = y;
 
         for (k = 1; k <= COUNT_MAX; k++)
         {
@@ -95,8 +94,7 @@ int main(int argc, char** argv)
             count[i][j] = k;
             break;
           }
-          x1 = x2;
-          y1 = y2;
+          x1 = x2; y1 = y2;
         }
 
         if (count[i][j] < COUNT_MAX) {

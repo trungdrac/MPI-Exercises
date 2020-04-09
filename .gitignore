@@ -19,8 +19,15 @@ openmp_ex2/mm_compare
 openmp_ex2/pi
 openmp_ex2/pi_compare
 
-week4/*.ppm
-week4/*.svg
+ex3/mm
+ex3/pi
+
+ex5/brute
+ex5/penmp
+ex5/sha
+
+ex4/*.ppm
+ex4/*.svg
 
 ### C ###
 # Prerequisites
