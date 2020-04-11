@@ -7,9 +7,9 @@
 typedef unsigned char byte;
 // const char *stringtest = "fc7368f13b4ced2fcf36fd0f589a0930928499e9c0f88ea83e5ac9464bdfc25a";
 const char *string1 = "4a5c2d660232375d25dc141febdaae056ba05e95fe606e88a350929a36a9ea67";
-// const char *string2 = "6f32ebbc1ee9cf3867df5f86f071ee147c6190ac7bfd88330fd8996a0abb512e";
-// const char *string3 = "33c35f8c8515b13ce15324718eccea7fb10e0c8848df3e3e0a7c0e529303828d";
-// const char *string4 = "dc348085d14fefa692adf1e7d97e2d59253c01189359873186d376ebe0f3ad3a";
+const char *string2 = "6f32ebbc1ee9cf3867df5f86f071ee147c6190ac7bfd88330fd8996a0abb512e";
+const char *string3 = "33c35f8c8515b13ce15324718eccea7fb10e0c8848df3e3e0a7c0e529303828d";
+const char *string4 = "dc348085d14fefa692adf1e7d97e2d59253c01189359873186d376ebe0f3ad3a";
 
 const int len = 26;
 
@@ -46,10 +46,10 @@ int main (void) {
 	byte s[4] ;
 	omp_set_num_threads(676);
 	
-	byte* sha256 = StringHashToByteArray(string1);
+	// byte* sha256 = StringHashToByteArray(string1);
 	// byte* sha256 = StringHashToByteArray(string2);
 	// byte* sha256 = StringHashToByteArray(string3);
-	// byte* sha256 = StringHashToByteArray(string4);
+	byte* sha256 = StringHashToByteArray(string4);
 	double start = omp_get_wtime();
 	// #pragma omp parallel for private(s)
 	for (int i = 97; i < 97+len; i++) {

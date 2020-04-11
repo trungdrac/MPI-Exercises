@@ -6,6 +6,9 @@
  
 #define HASH_NUM 4
 #define PASSWORD_LENGTH 4
+#define SIZE 29
+
+char alpabet[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', 10, 13};
 
 typedef unsigned char byte;
  
@@ -29,10 +32,10 @@ byte* StringHashToByteArray(const char* s) {
 	return hash;
 }
  
-void printResult(byte* password, byte* hash) {
-	char sPass[PASSWORD_LENGTH + 1];
+void printResult(byte* password, byte* hash, int passwordLength) {
+	char sPass[passwordLength + 1];
 	memcpy(sPass, password, 5);
-	sPass[PASSWORD_LENGTH] = 0;
+	sPass[passwordLength] = 0;
 	printf("%s => ", sPass);
 	for (int i = 0; i < SHA256_DIGEST_LENGTH; i++)
 		printf("%02x", hash[i]);
@@ -51,17 +54,23 @@ int main(int argc, char **argv)
 	{
  
 #pragma omp for
-		for (int a = 0; a < 26; a++)
+		for (int a = 0; a < SIZE; a++)
 		{
-			byte password[PASSWORD_LENGTH] = { 97 + a };
-			for (password[1] = 97; password[1] < 123; password[1]++)
-				for (password[2] = 97; password[2] < 123; password[2]++)
-					for (password[3] = 97; password[3] < 123; password[3]++)
-					{
-						byte *hash = SHA256(password, PASSWORD_LENGTH, 0);
+			for (int b = 0; b < SIZE; b++)
+				for (int c = 0; c < SIZE; c++)
+					for (int d = 0; d < SIZE; d++) {
+						byte *hash;
+						byte password[PASSWORD_LENGTH] = {alpabet[a], alpabet[b], alpabet[c], alpabet[d]};
+						hash = SHA256(password, PASSWORD_LENGTH, 0);
 						if (matches(hashedPass[0], hash) || matches(hashedPass[1], hash) 
-							|| matches(hashedPass[2], hash) || matches(hashedPass[3], hash))
-							printResult(password, hash);
+									|| matches(hashedPass[2], hash) || matches(hashedPass[3], hash))
+									printResult(password, hash, PASSWORD_LENGTH);
+						// password troll
+						byte passwordTroll[PASSWORD_LENGTH + 1] = {alpabet[a], alpabet[b], alpabet[c], alpabet[d], 10};
+						hash = SHA256(passwordTroll, PASSWORD_LENGTH + 1, 0);
+						if (matches(hashedPass[0], hash) || matches(hashedPass[1], hash) 
+									|| matches(hashedPass[2], hash) || matches(hashedPass[3], hash))
+									printResult(passwordTroll, hash, PASSWORD_LENGTH + 1);
 					}
 		}
 	}
