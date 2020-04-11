@@ -4,6 +4,9 @@
 #include <omp.h>
 #include <openssl/sha.h>
  
+#define HASH_NUM 4
+#define PASSWORD_LENGTH 4
+
 typedef unsigned char byte;
  
 int matches(byte *a, byte* b) {
@@ -27,9 +30,9 @@ byte* StringHashToByteArray(const char* s) {
 }
  
 void printResult(byte* password, byte* hash) {
-	char sPass[6];
+	char sPass[PASSWORD_LENGTH + 1];
 	memcpy(sPass, password, 5);
-	sPass[5] = 0;
+	sPass[PASSWORD_LENGTH] = 0;
 	printf("%s => ", sPass);
 	for (int i = 0; i < SHA256_DIGEST_LENGTH; i++)
 		printf("%02x", hash[i]);
@@ -38,30 +41,33 @@ void printResult(byte* password, byte* hash) {
  
 int main(int argc, char **argv)
 {
- 
+	byte* hashedPass[HASH_NUM];
+	hashedPass[0] = StringHashToByteArray("4a5c2d660232375d25dc141febdaae056ba05e95fe606e88a350929a36a9ea67");
+	hashedPass[1] = StringHashToByteArray("6f32ebbc1ee9cf3867df5f86f071ee147c6190ac7bfd88330fd8996a0abb512e");
+	hashedPass[2] = StringHashToByteArray("33c35f8c8515b13ce15324718eccea7fb10e0c8848df3e3e0a7c0e529303828d");
+	hashedPass[3] = StringHashToByteArray("dc348085d14fefa692adf1e7d97e2d59253c01189359873186d376ebe0f3ad3a");
+
 #pragma omp parallel
 	{
  
 #pragma omp for
 		for (int a = 0; a < 26; a++)
 		{
-			byte password[5] = { 97 + a };
-			byte* one =   StringHashToByteArray("1115dd800feaacefdf481f1f9070374a2a81e27880f187396db67958b207cbad");
-			byte* two =   StringHashToByteArray("3a7bd3e2360a3d29eea436fcfb7e44c735d117c42d1c1835420b6b9942dd4f1b");
-			byte* three = StringHashToByteArray("74e1bb62f8dabb8125a58852b63bdf6eaef667cb56ac7f7cdba6d7305c50a22f");
+			byte password[PASSWORD_LENGTH] = { 97 + a };
 			for (password[1] = 97; password[1] < 123; password[1]++)
 				for (password[2] = 97; password[2] < 123; password[2]++)
 					for (password[3] = 97; password[3] < 123; password[3]++)
-						for (password[4] = 97; password[4] < 123; password[4]++) {
-							byte *hash = SHA256(password, 5, 0);
-							if (matches(one, hash) || matches(two, hash) || matches(three, hash))
-								printResult(password, hash);
-						}
-			free(one);
-			free(two);
-			free(three);
+					{
+						byte *hash = SHA256(password, PASSWORD_LENGTH, 0);
+						if (matches(hashedPass[0], hash) || matches(hashedPass[1], hash) 
+							|| matches(hashedPass[2], hash) || matches(hashedPass[3], hash))
+							printResult(password, hash);
+					}
 		}
 	}
- 
+	
+	for (int i = 0; i < HASH_NUM; i++) {
+		free(hashedPass[i]);
+	}
 	return 0;
 }
