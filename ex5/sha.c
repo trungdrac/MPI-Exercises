@@ -51,7 +51,7 @@ int main (void) {
 	// byte* sha256 = StringHashToByteArray(string3);
 	byte* sha256 = StringHashToByteArray(string4);
 	double start = omp_get_wtime();
-	// #pragma omp parallel for private(s)
+	// #pragma omp parallel for collapse(4) private(s)
 	for (int i = 97; i < 97+len; i++) {
 		s[0] = i;
 		for (s[1] = 97; s[1] < 97+len; s[1]++)
